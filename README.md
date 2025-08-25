@@ -23,9 +23,9 @@ A Python application that uses Retrieval-Augmented Generation (RAG) to answer qu
 ## Setup
 
 1. **Install dependencies:**
-
-pip install -r requirements.txt
-
+       ```
+      pip install -r requirements.txt
+       ```
 2. **Prepare data:**
    - Place your book summaries PDF in `app/data/book_summaries.pdf`.
 
