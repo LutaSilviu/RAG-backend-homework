@@ -23,7 +23,6 @@ A Python application that uses Retrieval-Augmented Generation (RAG) to answer qu
 ## Setup
 
 1. **Install dependencies:**
-   
        ```
       pip install -r requirements.txt
        ```
