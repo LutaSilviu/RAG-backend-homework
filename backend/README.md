@@ -23,19 +23,19 @@ A Python application that uses Retrieval-Augmented Generation (RAG) to answer qu
 ## Setup
 
 1. **Install dependencies:**
-
-pip install -r requirements.txt
-
-2. **Prepare data:**
+       ```
+          pip install -r requirements.txt
+       ```
+3. **Prepare data:**
    - Place your book summaries PDF in `app/data/book_summaries.pdf`.
 
-3. **Initialize vectorstore:**
+4. **Initialize vectorstore:**
    - Run the RAG initialization script to process and index summaries:
      ```
      python app/services/rag_init.py
      ```
 
-4. **Start the application:**
+5. **Start the application:**
 
 uvicorn app.main:app --reload
 
