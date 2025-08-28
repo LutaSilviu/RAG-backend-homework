@@ -1,5 +1,6 @@
 import os
 
+
 from fastapi import FastAPI
 from langchain_chroma import Chroma
 from starlette.middleware.cors import CORSMiddleware

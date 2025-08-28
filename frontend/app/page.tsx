@@ -1,4 +1,5 @@
-"use client"; 
+"use client";
+import { type } from "os";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /**
@@ -89,20 +90,20 @@ export default function Page() {
         .join(" ");
       setQuery(text);
     };
-    recognition.onerror = () => {};
+    recognition.onerror = () => { };
     recognitionRef.current = recognition;
 
     return () => {
       try {
         recognition.stop();
-      } catch {}
+      } catch { }
     };
   }, [voiceMode]);
 
   const startListening = () => {
     try {
       recognitionRef.current?.start();
-    } catch {}
+    } catch { }
   };
 
   // Speak helper (Web Speech API)
@@ -127,15 +128,15 @@ export default function Page() {
       const res = await fetch(`${API_BASE}/cover_image`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_description : basePrompt}),
+        body: JSON.stringify({ image_description: basePrompt }),
       });
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Image API failed: ${res.status} ${text}`);
       }
-      const data: {content:string} = await res.json();
+      const data: { content: string } = await res.json();
       console.log(data)
-      const b64 = data.content 
+      const b64 = data.content
       if (!b64) throw new Error("No base64 image found in response");
       // Convert to data URL for <img src>
       setGenImageDataUrl(`data:${data.content || "image/png"};base64,${b64}`);
@@ -174,9 +175,15 @@ export default function Page() {
           text: query, // or `question: query` if that’s what your backend expects
         }),
       });
-      if (recRes.status === 400) throw new Error("I don't have such a book. Please try another question.");
-      if (!recRes.ok) throw new Error("Recommendation failed");
+
+
+      if (recRes.status === 400) {
+        const data = await recRes.json();
+        console.log(data)
+        throw new Error(data);
+      }
       const data: { status: number; content: string | string[] } = await recRes.json();
+      if (!recRes.ok) throw new Error("Recommendation failed");
 
       // Your backend seems to return [title, summary]
       if (Array.isArray(data.content)) {
@@ -244,9 +251,11 @@ export default function Page() {
               {speaking ? (
                 <button
                   type="button"
-                  onClick={() => {window.speechSynthesis.cancel();
+                  onClick={() => {
+                    window.speechSynthesis.cancel();
 
-                    setSpeaking(false);}
+                    setSpeaking(false);
+                  }
                   }
                   className="rounded-xl border px-3 py-1 text-sm"
                 >

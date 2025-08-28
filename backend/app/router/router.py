@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Request
 from starlette.responses import JSONResponse
 
-from app.const.const import inapropiate_message, fail_message
+from app.const.const import inapropiate_message, fail_message, not_enough_info_message
 from app.models.imageGenerationRequest import ImageGenerationRequest
 from app.models.question import Question
 from app.services.chatgbt import ChatGBT
@@ -12,11 +12,11 @@ router = APIRouter()
 def ask_question(question: Question,request: Request):
     vector_store = request.app.state.vector_store
     answer = ChatGBT.answer_question(question.text,vectorstore=vector_store )
-
-    if answer == fail_message or answer == inapropiate_message:
+    print("HERE: ", answer)
+    if answer == fail_message or answer == inapropiate_message or answer == not_enough_info_message:
         return JSONResponse(
             status_code=400,
-            content={"content": answer}
+            content=answer
         )
 
     return JSONResponse(

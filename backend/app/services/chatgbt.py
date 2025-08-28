@@ -5,7 +5,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, AIMessage
 from openai import OpenAI
 
-from app.const.const import API_MODEL, fail_message
+from app.const.const import API_MODEL, fail_message, not_enough_info_message
 from app.services.tools import get_summary_by_title,tools
 
 from app.const.const import inapropiate_message
@@ -124,8 +124,15 @@ class ChatGBT:
     
          """
 
-        prompt2 = f"""You are a helpful librarian assistant that receives questions regarding books, and answers with a sugestion.
+        prompt2 = f"""You are a helpful librarian assistant that receives questions regarding books,
+         and answers with a sugestion from the context that will be provided.
         You will be given a question and a context.
+        
+        If the context does not contain enough information to answer the question, respond with : {fail_message}
+        If the question is offensive, inappropriate, or not related to the context, respond with:
+        {inapropiate_message}
+        if the question does not contain enough information to answer, respond with: {not_enough_info_message}.
+        
         The context is a JSON array of books, each with fields: "title", "summary
         
         Question: {question}
@@ -135,6 +142,8 @@ class ChatGBT:
         respond with: {fail_message}
         If the question is inappropriate, respond with: {inapropiate_message}.
         Do not try to make up an answer.
+        
+        So, you either answer the question, or you respond with {fail_message} or {inapropiate_message}.
         """
         response = ChatGBT.__llm.invoke(
             input=prompt2
@@ -144,7 +153,7 @@ class ChatGBT:
         history = [HumanMessage(question), AIMessage(response.content)]
         print(response.content)
 
-        if response.content == fail_message or response.content == inapropiate_message:
+        if response.content == fail_message or response.content == inapropiate_message or response.content == not_enough_info_message:
             return response.content
 
         messages = [response.content]
